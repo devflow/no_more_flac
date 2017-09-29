@@ -25,6 +25,7 @@ func main() {
 
 	if _, err := os.Stat(dir + "\\ffmpeg.exe"); os.IsNotExist(err) {
 		fmt.Println("missing ffmpeg.exe in same location.")
+		return
 	}
 
 	err = filepath.Walk(dir, startConvertFile)
@@ -56,10 +57,12 @@ func startConvertFile(path string, f os.FileInfo, err error) error {
 
 	if err = convertFlacToMp3(path, randName); err != nil {
 		fmt.Printf(".... Failed to convert audio. \n")
+		return nil
 	}
 
 	if err = os.Rename(randName, targetName); err != nil {
 		fmt.Printf(".... Failed to move new file \n")
+		return nil
 	}
 
 	if err = os.Remove(path); err != nil {
@@ -67,8 +70,10 @@ func startConvertFile(path string, f os.FileInfo, err error) error {
 
 		if err = os.Remove(targetName); err != nil {
 			fmt.Printf("failed to remove original flac file \n")
+			return nil
 		} else {
 			fmt.Printf("removed converted file. \n")
+			return nil
 		}
 	}
 
